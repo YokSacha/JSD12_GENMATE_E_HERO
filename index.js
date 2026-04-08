@@ -29,6 +29,32 @@ class Hero {
   }
 }
 
+class IronTank {
+  constructor(name, hp, armor) {
+    this.name = name;
+    this.hp = hp;
+    this.armor = armor;
+  }
+
+  receiveDamage(power) {
+    if (this.armor > 0) {
+      const oldArmor = this.armor;
+      this.armor -= power;
+
+      if (this.armor < 0) {
+        this.hp += this.armor;
+        this.armor = 0;
+      }
+
+      console.log(
+        `${this.name} Use your ARMOR to absorb the damage! (Armor: ${oldArmor} -> ${this.armor})`,
+      );
+    } else {
+      this.hp -= power;
+      console.log(
+        `${this.name} has no armor left! HP is reduced by ${power}. (HP: ${this.hp + power} -> ${this.hp})`,
+      );
+    }
 ///// Magic ////
 
 class Mage extends Hero {
@@ -160,4 +186,12 @@ class Assassin extends Hero {
             console.log(`${this.name} is currently hidden.`);
         }
     }
+  }
 }
+
+const hero = new IronTank("Soldier Boy", 500, 100);
+
+hero.receiveDamage(30);
+hero.receiveDamage(90);
+hero.receiveDamage(10);
+console.log(hero);
