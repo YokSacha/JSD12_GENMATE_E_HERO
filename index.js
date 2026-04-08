@@ -30,6 +30,52 @@ class Hero {
   }
 }
 
+///// Magic ////
+
+class Mage extends Hero {
+  constructor(name, gender, multiverse, hp, attack, mana) {
+    // เรียกใช้ constructor ของ Hero (Base Class)
+    super(name, gender, multiverse, hp, attack);
+    this.mana = mana; // พลังเวทมนตร์
+    this.hasResurrected = false; // ใช้เช็คว่าเคยชุบชีวิตไปหรือยัง (ชุบได้แค่ครั้งเดียว)
+  }
+
+  // Mage Specific Trait
+  castHeal() {
+    if (this.hp > 0) {
+      this.hp += 20;
+      console.log(
+        `${this.name} chants an ancient spell. HP restored to ${this.hp}.`,
+      );
+    }
+  }
+
+  // Override gotattacked เพื่อใส่ Logic การคืนชีพ
+  gotattacked(attack) {
+    this.hp -= attack;
+    console.log(
+      `CRITICAL HIT! ${this.name} takes ${attack} damage. (Remaining HP: ${this.hp})`,
+    );
+
+    // Logic ชุบชีวิต (Resurrection)
+    if (this.hp <= 0 && !this.hasResurrected) {
+      console.log(`[System] Warning: Vital signs dropping...`);
+      console.log(
+        `[Ultimate] The Ray of Light pierces the sky! ${this.name} is reviving...`,
+      );
+      this.hp = 50; // ฟื้นคืนชีพกลับมามี HP ครึ่งหนึ่ง
+      this.hasResurrected = true; // ล็อคไว้ไม่ให้ชุบซ้ำ
+      console.log(
+        `${this.name} has returned from the void. HP is restored to ${this.hp}.`,
+      );
+    } else if (this.hp <= 0 && this.hasResurrected) {
+      console.log(
+        `${this.name} has fallen in battle. There is no magic left to save her.`,
+      );
+    }
+  }
+}
+
 class Fighter extends Hero {
   constructor(name, gender, multiverse, hp, attack) {
     super(name, gender, multiverse, hp, attack);
@@ -67,3 +113,23 @@ class Warrior extends Hero {
     }
   }
 }
+
+// --- DISPLAY / TEST RUN ---
+
+const mage = new Mage("Nami", "Female", "Enchanted Forest", 80, 15, 100);
+const fighter = new Fighter("Marty", "Male", "Julong", 200, 100);
+console.log("--- The Great War Begins ---");
+mage.introduce();
+fighter.introduce();
+console.log("--- Encounter with the Great Enemy: JavaScript");
+mage.gotattacked(fighter.attack);
+fighter.gotattacked(mage.attack);
+mage.statusNow();
+fighter.statusNow();
+fighter.buffpower();
+mage.gotattacked(fighter.attack);
+mage.statusNow();
+fighter.debuffpower();
+fighter.statusNow();
+fighter.shiftMultiverse("Edoha");
+fighter.introduce();
